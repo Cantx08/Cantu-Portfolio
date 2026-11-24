@@ -1,0 +1,140 @@
+---
+import { navLinks, profile } from '../data/profile';
+import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header
+  data-navbar
+  class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-300 data-[scrolled=true]:border-zinc-200/80 data-[scrolled=true]:bg-white/80 data-[scrolled=true]:backdrop-blur-lg dark:data-[scrolled=true]:border-zinc-800/80 dark:data-[scrolled=true]:bg-zinc-950/80"
+>
+  <nav class="container-page flex h-16 items-center justify-between" aria-label="Principal">
+    <a
+      href="#inicio"
+      class="group flex items-center gap-2.5 font-semibold text-zinc-950 dark:text-zinc-50"
+      aria-label={`${profile.name}, ir al inicio`}
+    >
+      <span
+        class="grid size-8 place-items-center rounded-lg bg-zinc-950 font-mono text-xs font-bold text-accent-400 transition group-hover:bg-accent-500 group-hover:text-zinc-950 dark:bg-zinc-800"
+        aria-hidden="true"
+      >
+        {profile.initials}
+      </span>
+      <span class="hidden sm:inline">{profile.name}</span>
+    </a>
+
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              data-nav-link
+              class="rounded-lg px-3 py-2 text-sm font-medium text-zinc-600 transition hover:text-zinc-950 aria-[current=true]:text-zinc-950 dark:text-zinc-400 dark:hover:text-zinc-50 dark:aria-[current=true]:text-zinc-50"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-1 sm:gap-2">
+      <ThemeToggle />
+      <a href="#contacto" class="btn-primary hidden px-4 py-2 sm:inline-flex">
+        Hablemos
+        <Icon name="arrowRight" class="size-4" />
+      </a>
+      <button
+        type="button"
+        data-menu-button
+        class="inline-flex size-10 items-center justify-center rounded-lg text-zinc-700 hover:bg-zinc-100 md:hidden dark:text-zinc-300 dark:hover:bg-zinc-800"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Abrir menú"
+      >
+        <Icon name="menu" class="size-5" />
+      </button>
+    </div>
+  </nav>
+
+  <!-- Menú móvil -->
+  <div
+    id="mobile-menu"
+    data-mobile-menu
+    hidden
+    class="border-b border-zinc-200 bg-white/95 backdrop-blur-lg md:hidden dark:border-zinc-800 dark:bg-zinc-950/95"
+  >
+    <ul class="container-page flex flex-col gap-1 py-4">
+      {
+        navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="block rounded-lg px-3 py-3 text-base font-medium text-zinc-800 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-900"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="pt-2">
+        <a href="#contacto" class="btn-primary w-full">
+          Hablemos <Icon name="arrowRight" class="size-4" />
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-navbar]')!;
+  const menuBtn = document.querySelector<HTMLButtonElement>('[data-menu-button]')!;
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]')!;
+
+  // Fondo translúcido al hacer scroll
+  const onScroll = () => {
+    header.dataset.scrolled = String(window.scrollY > 8 || !menu.hidden);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Menú móvil
+  const setMenu = (open: boolean) => {
+    menu.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    onScroll();
+  };
+  menuBtn.addEventListener('click', () => setMenu(Boolean(menu.hidden)));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.hidden) {
+      setMenu(false);
+      menuBtn.focus();
+    }
+  });
+  matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+    if (e.matches) setMenu(false);
+  });
+
+  // Resalta el enlace de la sección visible
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+  const sections = [...links]
+    .map((l) => document.querySelector<HTMLElement>(l.getAttribute('href')!))
+    .filter((s): s is HTMLElement => !!s);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        links.forEach((l) => {
+          if (l.getAttribute('href') === `#${entry.target.id}`) l.setAttribute('aria-current', 'true');
+          else l.removeAttribute('aria-current');
+        });
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  sections.forEach((s) => observer.observe(s));
+</script>

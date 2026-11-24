@@ -1,0 +1,21 @@
+---
+/**
+ * Página de respaldo: solo se ve si JavaScript está desactivado
+ * (el formulario hace POST nativo y Netlify redirige aquí).
+ */
+import Layout from '../layouts/Layout.astro';
+import { profile } from '../data/profile';
+---
+
+<Layout title={`¡Gracias! — ${profile.name}`}>
+  <main id="contenido" class="grid min-h-dvh place-items-center px-4 text-center">
+    <div>
+      <p class="eyebrow">Mensaje enviado</p>
+      <h1 class="mt-3 text-4xl font-bold tracking-tight">¡Gracias por escribirme!</h1>
+      <p class="mx-auto mt-4 max-w-md text-zinc-600 dark:text-zinc-400">
+        Recibí tu mensaje y te responderé muy pronto.
+      </p>
+      <a href="/" class="btn-primary mt-8">Volver al inicio</a>
+    </div>
+  </main>
+</Layout>

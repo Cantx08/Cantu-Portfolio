@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  class="inline-flex size-10 items-center justify-center rounded-lg text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"
+  aria-label="Cambiar a modo oscuro"
+  aria-pressed="false"
+>
+  <Icon name="moon" class="size-5 dark:hidden" />
+  <Icon name="sun" class="hidden size-5 dark:block" />
+</button>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const root = document.documentElement;
+
+  const sync = () => {
+    const isDark = root.classList.contains('dark');
+    buttons.forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(isDark));
+      btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+    });
+  };
+
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const next = root.classList.contains('dark') ? 'light' : 'dark';
+      root.classList.toggle('dark', next === 'dark');
+      root.style.colorScheme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {}
+      sync();
+    }),
+  );
+
+  sync();
+</script>

@@ -1,0 +1,102 @@
+---
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+
+const slug = profile.name
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[̀-ͯ]/g, '')
+  .replace(/\s+/g, '-');
+
+// Fragmentos para la tarjeta tipo editor
+const str = (s: string) => `<span class="text-accent-700 dark:text-accent-300">'${s}'</span>`;
+const arr = (items: string[]) => `[${items.map(str).join(', ')}]`;
+const code = [
+  `<span class="text-purple-600 dark:text-purple-400">const</span> <span class="text-sky-700 dark:text-sky-300">engineer</span> = {`,
+  `  name: ${str(profile.name)},`,
+  `  role: ${str('Full Stack')},`,
+  `  based: ${str('Quito, EC')},`,
+  `  frontend: ${arr(['React', 'Next.js'])},`,
+  `  backend: ${arr(['Node', 'FastAPI', 'Laravel'])},`,
+  `  data: ${arr(['PostgreSQL', 'SQL Server'])},`,
+  `  ships: <span class="text-amber-600 dark:text-amber-300">true</span>,`,
+  `};`,
+  ``,
+  `<span class="text-purple-600 dark:text-purple-400">await</span> engineer.<span class="text-sky-700 dark:text-sky-300">build</span>(${str('tu-próxima-idea')});<span class="ml-0.5 inline-block h-4 w-2 translate-y-0.5 animate-pulse bg-accent-500"></span>`,
+].join('\n');
+---
+
+<section id="inicio" class="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28" aria-labelledby="hero-title">
+  <div class="bg-grid pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div
+    class="pointer-events-none absolute left-1/2 top-0 -z-10 h-[420px] w-[720px] max-w-full -translate-x-1/2 rounded-full bg-accent-400/15 blur-3xl dark:bg-accent-500/10"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="container-page grid items-center gap-14 lg:grid-cols-[1.15fr_1fr]">
+    <div>
+      {
+        profile.available && (
+          <p class="inline-flex items-center gap-2 rounded-full border border-accent-500/30 bg-accent-50 px-3 py-1 text-xs font-medium text-accent-800 dark:border-accent-400/25 dark:bg-accent-400/10 dark:text-accent-300">
+            <span class="relative flex size-2" aria-hidden="true">
+              <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent-500 opacity-75" />
+              <span class="relative inline-flex size-2 rounded-full bg-accent-500" />
+            </span>
+            {profile.availabilityText}
+          </p>
+        )
+      }
+
+      <p class="mt-6 font-mono text-sm text-zinc-500 dark:text-zinc-400">
+        <span class="text-accent-700 dark:text-accent-400">~/{slug}</span>{' '}
+        <span class="text-zinc-400 dark:text-zinc-600" aria-hidden="true">—</span>{' '}
+        {profile.title} · {profile.role}
+      </p>
+
+      <h1 id="hero-title" class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        La innovación ya no es una opción,{' '}
+        <span
+          class="bg-gradient-to-r from-accent-600 to-teal-600 bg-clip-text text-transparent dark:from-accent-300 dark:to-teal-300"
+        >
+          es nuestra realidad.
+        </span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+        Soy <strong class="font-semibold text-zinc-900 dark:text-zinc-100">{profile.name}</strong>. {profile.summary}
+      </p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <a href="#contacto" class="btn-primary px-6">
+          Iniciemos tu proyecto
+          <Icon name="arrowRight" class="size-4" />
+        </a>
+        <a href="#proyectos" class="btn-secondary px-6">Ver proyectos</a>
+      </div>
+
+      <ul class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
+        <li class="flex items-center gap-1.5"><Icon name="mapPin" class="size-4" /> {profile.location}</li>
+        <li class="flex items-center gap-1.5"><Icon name="clock" class="size-4" /> {profile.timezone}</li>
+      </ul>
+    </div>
+
+    <!-- Tarjeta decorativa tipo editor de código -->
+    <div class="relative hidden lg:block" aria-hidden="true">
+      <div class="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-br from-accent-400/20 to-transparent blur-2xl">
+      </div>
+      <div
+        class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-zinc-900/10 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-black/40"
+      >
+        <div class="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+          <span class="size-3 rounded-full bg-red-400/80"></span>
+          <span class="size-3 rounded-full bg-amber-400/80"></span>
+          <span class="size-3 rounded-full bg-accent-400/80"></span>
+          <span class="ml-3 font-mono text-xs text-zinc-500">engineer.ts</span>
+        </div>
+        <pre
+          class="overflow-x-auto p-6 font-mono text-[13px] leading-7 text-zinc-700 dark:text-zinc-300"><code set:html={code} /></pre>
+      </div>
+    </div>
+  </div>
+</section>
