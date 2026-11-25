@@ -14,8 +14,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Cross-Origin-Opener-Policy = "same-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    # Nota: no se usa Cross-Origin-Opener-Policy porque rompe la conexión con
+    # Tag Assistant (modo Preview de Google Tag Manager).
+    # CSP compatible con Google Tag Manager, GA4 y Tag Assistant:
+    # https://developers.google.com/tag-platform/security/guides/csp
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://tagmanager.google.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://tagmanager.google.com https://fonts.googleapis.com; img-src 'self' data: https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://ssl.gstatic.com https://www.gstatic.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com; frame-src https://*.googletagmanager.com https://tagassistant.google.com; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
 
 # HTML: siempre revalidar para que los despliegues se vean al instante
 [[headers]]
